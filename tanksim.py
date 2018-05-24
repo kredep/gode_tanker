@@ -8,68 +8,68 @@ def getSurfaceArea(tank_params, h):
         Inn-parametere er radius i bunn (R2), 
         differansen i radius oppe og nede (R1), 
         starthøyden (h_0) og høyden (h)'''
-    return math.pi*(tank_params["R2"] + tank_params["R1"] / tank_params["max_height"] * h)**2
+    return math.pi*(tank_params["R2"] + tank_params["R1"] / tank_params["h_max"] * h)**2
 
 # Definerer tanker med variablene deres
 # Liten konisk metallbøtte
 tank1_params = {
-    "max_height": 9, # Bøttas maksimale høyde
+    "h_max": 9, # Bøttas maksimale høyde
     "h_0": 9,    # Starthøyde gitt i cm
     "R1": 2.35,  # Avvik fra konstant radius
     "R2": 4.55,  # Konstant radius
     "h_1": 1.5,  # Simuleringsstopp gitt i cm over hullet
     "C": 0.6783407237648454,  # Korreksjonsfaktor for vann gjennom hull (denne er eksakt)
-    "A_hull": math.pi*(0.2/2)**2 # Areal av hull
+    "A_hole": math.pi*(0.2/2)**2 # Areal av hull
 }
 # Finner overflateareal ved h_0
 tank1_params["areal"] = getSurfaceArea(tank1_params, tank1_params["h_0"])
 # Definerer tanken som en klasse for eulers metode
-tank1 = euler.Tank(tank1_params["A_hull"], tank1_params["areal"], tank1_params["h_0"], tank1_params["C"])
+tank1 = euler.Tank(tank1_params["A_hole"], tank1_params["areal"], tank1_params["h_0"], tank1_params["C"])
 
 # Stor konisk metallbøtte
 tank2_params = {
-    "max_height": 12, # Bøttas maksimale høyde
+    "h_max": 12, # Bøttas maksimale høyde
     "h_0": 12,   # Starthøyde gitt i cm
     "R1": 2.35,  # Avvik fra konstant radius
     "R2": 5.95,  # Konstant radius
     "h_1": 1.2,  # Simuleringsstopp gitt i cm over hullet
     "C": 0.73,   # Korreksjonsfaktor for vann gjennom hull
-    "A_hull": math.pi*(0.3/2)**2 # Areal av hull
+    "A_hole": math.pi*(0.3/2)**2 # Areal av hull
 }
 # Finner overflateareal ved h_0
 tank2_params["areal"] = getSurfaceArea(tank2_params, tank2_params["h_0"])
 # Definerer tanken som en klasse for eulers metode
-tank2 = euler.Tank(tank2_params["A_hull"], tank2_params["areal"], tank2_params["h_0"], tank2_params["C"])
+tank2 = euler.Tank(tank2_params["A_hole"], tank2_params["areal"], tank2_params["h_0"], tank2_params["C"])
 
 # Rektangulær tank
 tank3_params = {
-    "max_height": 15, # Bøttas maksimale høyde
+    "h_max": 15, # Bøttas maksimale høyde
     "h_0": 15,       # Starthøyde gitt i cm
     "lengde": 19.5,  # Lengde i cm
     "bredde": 28,    # Bredde i cm
     "h_1": 2,      # Simuleringsstopp gitt i cm over hullet
     "C": 0.61,      # Korreksjonsfaktor for vann gjennom hull
-    "A_hull": math.pi*(0.4/2)**2 # Areal av hull
+    "A_hole": math.pi*(0.4/2)**2 # Areal av hull
 }
 # Finner overflateareal ved h_0
 tank3_params["areal"] = tank3_params["lengde"] * tank3_params["bredde"]
 # Definerer tanken som en klasse for eulers metode
-tank3 = euler.Tank(tank3_params["A_hull"], tank3_params["areal"], tank3_params["h_0"], tank3_params["C"])
+tank3 = euler.Tank(tank3_params["A_hole"], tank3_params["areal"], tank3_params["h_0"], tank3_params["C"])
 
 # Blå konisk plastbøtte
 tank4_params = {
-    "max_height": 21, # Bøttas maksimale høyde
+    "h_max": 21, # Bøttas maksimale høyde
     "h_0": 2,   # Starthøyde gitt i cm
     "R1": 2.75,  # Avvik fra konstant radius
     "R2": 9.5,   # Konstant radius
     "h_1": 2,    # Simuleringsstopp gitt i cm over hullet
     "C": 0.52,   # Korreksjonsfaktor for vann gjennom hull
-    "A_hull": math.pi*(0.5/2)**2 # Areal av hull
+    "A_hole": math.pi*(0.5/2)**2 # Areal av hull
 }
 # Finner overflateareal ved h_0
 tank4_params["areal"] = getSurfaceArea(tank4_params, tank4_params["h_0"])
 # Definerer tanken som en klasse for eulers metode
-tank4 = euler.Tank(tank4_params["A_hull"], tank4_params["areal"], tank4_params["h_0"], tank4_params["C"])
+tank4 = euler.Tank(tank4_params["A_hole"], tank4_params["areal"], tank4_params["h_0"], tank4_params["C"])
 
 DELTA_T = euler.DELTA_T
 print(DELTA_T)
@@ -91,7 +91,7 @@ while run:
         tank1.AREA_SURFACE = tank1_params["areal"]
         tank1.runStep(q_inn)
         levels[0][round(time,rnd)] = tank1.fluidHeight
-        q_ut_tank1 = tank1_params["A_hull"] * tank1.getFlowVelocity(list(levels[0].values())[-1])
+        q_ut_tank1 = tank1_params["A_hole"] * tank1.getFlowVelocity(list(levels[0].values())[-1])
     elif q_ut_tank1 != 0: #time == len(list(levels[0].values())):
         print("Tank1 tom etter {}s = {}min".format(round(time,2), round(time/60,2)))
         q_ut_tank1 = 0
@@ -101,7 +101,7 @@ while run:
         tank2.AREA_SURFACE = tank2_params["areal"]
         tank2.runStep(q_ut_tank1)
         levels[1][round(time,rnd)] = tank2.fluidHeight
-        q_ut_tank2 = tank2_params["A_hull"] * tank2.getFlowVelocity(list(levels[1].values())[-1])
+        q_ut_tank2 = tank2_params["A_hole"] * tank2.getFlowVelocity(list(levels[1].values())[-1])
     elif q_ut_tank2 != 0: #time == len(list(levels[1].values())):
         print("Tank2 tom etter {}s = {}min".format(round(time,2), round(time/60,2)))
         q_ut_tank2 = 0
@@ -110,7 +110,7 @@ while run:
         tank3.AREA_SURFACE = tank3_params["areal"]
         tank3.runStep(q_ut_tank2)
         levels[2][round(time,rnd)] = tank3.fluidHeight
-        q_ut_tank3 = tank3_params["A_hull"] * tank3.getFlowVelocity(list(levels[2].values())[-1])
+        q_ut_tank3 = tank3_params["A_hole"] * tank3.getFlowVelocity(list(levels[2].values())[-1])
     elif q_ut_tank3 != 0: #time == len(list(levels[2].values())):
         print("Tank3 tom etter {}s = {}min".format(round(time,2), round(time/60,2)))
         q_ut_tank3 = 0
@@ -150,4 +150,4 @@ plt.grid()
 plt.show()
 
 # Starter animasjon
-animasjon.animate(levels[0],levels[1],levels[2],levels[3],[tank1_params,tank2_params,tank3_params,tank4_params],DELTA_T,rnd)
+animasjon.animate([levels[0],levels[1],levels[2],levels[3]],[tank1_params,tank2_params,tank3_params,tank4_params],DELTA_T,rnd)
