@@ -1,4 +1,4 @@
-def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
+def animate(levels, params, DELTA_T, rnd):
     '''
     Funksjon som animerer nivået til fire tanker.
     Inn-parameterne er fire dictionaries for nivåene til tankene,
@@ -46,7 +46,7 @@ def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
         "dm-bot": 100,
         "height": 100,
         "h0": 100,
-        "levels": levels1,
+        "levels": levels[0],
         "params": params[0]
     }
     tank2 = {
@@ -56,7 +56,7 @@ def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
         "dm-bot": 120,
         "height": 120,
         "h0": 120,
-        "levels": levels2,
+        "levels": levels[1],
         "params": params[1]
     }
     tank3 = {
@@ -66,7 +66,7 @@ def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
         "dm-bot": 150,
         "height": 100,
         "h0": 100,
-        "levels": levels3,
+        "levels": levels[2],
         "params": params[2]
     }
     tank4 = {
@@ -76,7 +76,7 @@ def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
         "dm-bot": 150,
         "height": 170,
         "h0": 170,
-        "levels": levels4,
+        "levels": levels[3],
         "params": params[3]
     }
     tanks = [tank1,tank2,tank3,tank4] # Liste med alle tankene
@@ -93,11 +93,11 @@ def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
         # Løkke som henter høyden gitt tiden og tegner tankene med tekst
         for index, tank in enumerate(tanks):
             if level_time in tank["levels"]:
-                tank["height"] = (tank["levels"][level_time] / tank["params"]["max_height"]) * tank["h0"]
+                tank["height"] = (tank["levels"][level_time] / tank["params"]["h_max"]) * tank["h0"]
                 screen.blit(ui_txt_small.render("Høyde: {}cm".format(round(tank["levels"][level_time],2)),True,WHITE), [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
                 screen.blit(img, (tank["left"]-60, tank["top"]+tank["h0"]-30))
             elif level_time > list(tank["levels"].values())[-1]:
-                tank["height"] = (list(tank["levels"].values())[-1] / tank["params"]["max_height"]) * tank["h0"]
+                tank["height"] = (list(tank["levels"].values())[-1] / tank["params"]["h_max"]) * tank["h0"]
                 screen.blit(ui_txt_small.render("Høyde: {}cm".format(round(list(tank["levels"].values())[-1],2)),True,WHITE), [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
             else:
                 screen.blit(ui_txt_small.render("Høyde: {}cm".format(round(list(tank["levels"].items())[-1][1],2)),True,WHITE), [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
@@ -116,11 +116,11 @@ def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
             [tank["left"]+tank["dm-top"],tank["top"]]],
             4)
             screen.blit(ui_txt_small.render("Tank {}".format(index+1),True,WHITE), [tank["left"]-60,tank["top"]-100])
-            screen.blit(ui_txt_small.render("Maks høyde: {}cm".format(tank["params"]["max_height"]),True,WHITE), [tank["left"]-60,tank["top"]-85])
+            screen.blit(ui_txt_small.render("Maks høyde: {}cm".format(tank["params"]["h_max"]),True,WHITE), [tank["left"]-60,tank["top"]-85])
             screen.blit(ui_txt_small.render("Starthøyde: {}cm".format(tank["params"]["h_0"]),True,WHITE), [tank["left"]-60,tank["top"]-70])
             screen.blit(ui_txt_small.render("Stopphøyde: {}cm".format(tank["params"]["h_1"]),True,WHITE), [tank["left"]-60,tank["top"]-55])
             screen.blit(ui_txt_small.render("C: {}".format(tank["params"]["C"]),True,WHITE), [tank["left"]-60,tank["top"]-40])
-            screen.blit(ui_txt_small.render("Hull: {}cm^2".format(round(tank["params"]["A_hull"],4)),True,WHITE), [tank["left"]-60,tank["top"]-25])
+            screen.blit(ui_txt_small.render("Hull: {}cm^2".format(round(tank["params"]["A_hole"],4)),True,WHITE), [tank["left"]-60,tank["top"]-25])
 
         # Progressbar (kan brukes ved å klikke og dra med musa for å stille tiden)
         pygame.draw.rect(screen, GREEN, pygame.Rect(50, 110, 30, 500))
@@ -169,18 +169,18 @@ def animate(levels1,levels2,levels3,levels4, params, DELTA_T, rnd):
         pos_y = pos[1]
         if pos_x >= 50 and pos_x <= 80 and p1:
             if pos_y < 110: time = 0
-            elif pos_y > 610: time = list(levels4.keys())[-1]
+            elif pos_y > 610: time = list(levels[3].keys())[-1]
             else:
                 pygame.draw.rect(screen, WHITE, pygame.Rect(50, 110, 30, 500))
                 pygame.draw.rect(screen, GREEN, pygame.Rect(50, pos_y, 30, 610 - pos_y))
-                time = round(list(levels4.keys())[-1] * (pos_y - 110) / 500)
-        if pause == False and time < list(levels4.keys())[-1]+DELTA_T:
+                time = round(list(levels[3].keys())[-1] * (pos_y - 110) / 500)
+        if pause == False and time < list(levels[3].keys())[-1]+DELTA_T:
             time += (1/FPS)*speedfactor
             level_time = round(time,rnd)
 
         # Tegner progressbaren
-        if round(time) < list(levels4.keys())[-1]:
-            px = (round(time) / list(levels4.keys())[-1] * 500)
+        if round(time) < list(levels[3].keys())[-1]:
+            px = (round(time) / list(levels[3].keys())[-1] * 500)
         else:
             px = 500
         pygame.draw.rect(screen, WHITE, pygame.Rect(50, 110, 30, px))
