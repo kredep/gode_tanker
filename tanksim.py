@@ -93,7 +93,12 @@ if type(DELTA_T) is int:
 else:
     rnd = str(DELTA_T)[::-1].find('.')
 
-levels = [{0:tank1_params["h_0"]},{0:tank2_params["h_0"]},{0:tank3_params["h_0"]},{0:tank4_params["h_0"]}] # Plassholder for høyden gitt tiden
+# Plassholder for høyden gitt tiden
+levels = [{0:tank1_params["h_0"]},
+          {0:tank2_params["h_0"]},
+          {0:tank3_params["h_0"]},
+          {0:tank4_params["h_0"]}]
+
 run = True # Bestemmer om simuleringen forsatt skal kjøre
 time = 0 # Tiden i sekunder
 q_inn = 0 # cm^3/s inn i øverste tank (tank1)
