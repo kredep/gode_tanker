@@ -79,6 +79,7 @@ def animate(levels, params, DELTA_T, rnd):
         "levels": levels[3],
         "params": params[3]
     }
+
     tanks = [tank1,tank2,tank3,tank4] # Liste med alle tankene
     time = 0 # Tiden i sekunder
     level_time = 0 # "Hentetiden" til bruk for å hente høyden fra dictionariene
@@ -93,17 +94,32 @@ def animate(levels, params, DELTA_T, rnd):
         # Løkke som henter høyden gitt tiden og tegner tankene med tekst
         for index, tank in enumerate(tanks):
             if level_time in tank["levels"]:
-                tank["height"] = (tank["levels"][level_time] / tank["params"]["h_max"]) * tank["h0"]
-                screen.blit(ui_txt_small.render("Høyde: {}cm".format(round(tank["levels"][level_time],2)),True,WHITE), [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
+                tank["height"] = (tank["levels"][level_time] / 
+                                  tank["params"]["h_max"]) * tank["h0"]
+                #draw info on current height
+                screen.blit(ui_txt_small.render(
+                            "Høyde: {}cm".format(round(tank["levels"][level_time],2)),True,WHITE),
+                            [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
+                #draw arrow
                 screen.blit(img, (tank["left"]-60, tank["top"]+tank["h0"]-30))
-            elif level_time > list(tank["levels"].values())[-1]:
-                tank["height"] = (list(tank["levels"].values())[-1] / tank["params"]["h_max"]) * tank["h0"]
-                screen.blit(ui_txt_small.render("Høyde: {}cm".format(round(list(tank["levels"].values())[-1],2)),True,WHITE), [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
-            else:
-                screen.blit(ui_txt_small.render("Høyde: {}cm".format(round(list(tank["levels"].items())[-1][1],2)),True,WHITE), [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
 
-            r = (((tank["dm-bot"]/2))+(((tank["dm-top"] - tank["dm-bot"])/2)/(tank["h0"]))*(tank["height"]))
+            elif level_time > list(tank["levels"].values())[-1]:
+                tank["height"] = (list(tank["levels"].values())[-1] / 
+                                       tank["params"]["h_max"]) * tank["h0"]
+                #draw info on current height
+                screen.blit(ui_txt_small.render(
+                            "Høyde: {}cm".format(round(list(tank["levels"].values())[-1],2)),True,WHITE),
+                            [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
+            
+            else:
+                #draw info on current height
+                screen.blit(ui_txt_small.render(
+                            "Høyde: {}cm".format(round(list(tank["levels"].items())[-1][1],2)),True,WHITE),
+                            [tank["left"]+tank["dm-top"]+10, tank["top"]+tank["h0"]-tank["height"]])
+
+            r = (tank["dm-bot"]/2) + (((tank["dm-top"] - tank["dm-bot"])/2) / (tank["h0"])) * tank["height"]
             h = tank["height"]
+            #draw tank
             pygame.draw.polygon(screen, (SEA_BLUE), [
                 [tank["left"]+tank["dm-top"]/2-r,tank["top"]+tank["h0"]-h], # Top left
                 [tank["left"]+(tank["dm-top"]-tank["dm-bot"])/2,tank["top"]+tank["h0"]], # Bottom left
@@ -115,22 +131,23 @@ def animate(levels, params, DELTA_T, rnd):
             [tank["left"]+(tank["dm-top"]-tank["dm-bot"])/2 + tank["dm-bot"],tank["top"]+tank["h0"]], 
             [tank["left"]+tank["dm-top"],tank["top"]]],
             4)
-            screen.blit(ui_txt_small.render("Tank {}".format(index+1),True,WHITE), [tank["left"]-60,tank["top"]-100])
-            screen.blit(ui_txt_small.render("Maks høyde: {}cm".format(tank["params"]["h_max"]),True,WHITE), [tank["left"]-60,tank["top"]-85])
-            screen.blit(ui_txt_small.render("Starthøyde: {}cm".format(tank["params"]["h_0"]),True,WHITE), [tank["left"]-60,tank["top"]-70])
-            screen.blit(ui_txt_small.render("Stopphøyde: {}cm".format(tank["params"]["h_1"]),True,WHITE), [tank["left"]-60,tank["top"]-55])
-            screen.blit(ui_txt_small.render("C: {}".format(tank["params"]["C"]),True,WHITE), [tank["left"]-60,tank["top"]-40])
-            screen.blit(ui_txt_small.render("Hull: {}cm^2".format(round(tank["params"]["A_hole"],4)),True,WHITE), [tank["left"]-60,tank["top"]-25])
+            #draw info on tank
+            screen.blit(ui_txt_small.render("Tank {}"         .format(index+1),                          True,WHITE), [tank["left"]-60,tank["top"]-100])
+            screen.blit(ui_txt_small.render("Maks høyde: {}cm".format(tank["params"]["h_max"]),          True,WHITE), [tank["left"]-60,tank["top"]-85])
+            screen.blit(ui_txt_small.render("Starthøyde: {}cm".format(tank["params"]["h_0"]),            True,WHITE), [tank["left"]-60,tank["top"]-70])
+            screen.blit(ui_txt_small.render("Stopphøyde: {}cm".format(tank["params"]["h_1"]),            True,WHITE), [tank["left"]-60,tank["top"]-55])
+            screen.blit(ui_txt_small.render("C: {}"           .format(tank["params"]["C"]),              True,WHITE), [tank["left"]-60,tank["top"]-40])
+            screen.blit(ui_txt_small.render("Hull: {}cm^2"    .format(round(tank["params"]["A_hole"],4)),True,WHITE), [tank["left"]-60,tank["top"]-25])
 
         # Progressbar (kan brukes ved å klikke og dra med musa for å stille tiden)
         pygame.draw.rect(screen, GREEN, pygame.Rect(50, 110, 30, 500))
 
         # Tegner knapper
-        button1 = pygame.draw.rect(screen, GREEN, pygame.Rect(150, 150, 125, 50))
-        button2 = pygame.draw.rect(screen, RED, pygame.Rect(150, 210, 125, 50))
+        speedUp_button = pygame.draw.rect(screen, GREEN, pygame.Rect(150, 150, 125, 50))
+        speedDown_button = pygame.draw.rect(screen, RED, pygame.Rect(150, 210, 125, 50))
         screen.blit(ui_txt.render("Øk fart", True, GRAY), (172, 165))
         screen.blit(ui_txt.render("Senk fart", True, GRAY), (160, 225))
-        button3 = pygame.draw.rect(screen, SEA_BLUE, pygame.Rect(150, 270, 125, 50))
+        pause_button = pygame.draw.rect(screen, SEA_BLUE, pygame.Rect(150, 270, 125, 50))
         if pause:
             screen.blit(ui_txt.render("Fortsett", True, WHITE), (166, 285))
         else:
@@ -139,26 +156,23 @@ def animate(levels, params, DELTA_T, rnd):
         # Sjekker om knapper blir presset
         pos = pygame.mouse.get_pos()
         p1, p2, p3 = pygame.mouse.get_pressed()
-        if button1.collidepoint(pos):
+        if speedUp_button.collidepoint(pos):
             pygame.draw.rect(screen, GREEN_DARK, pygame.Rect(150, 150, 125, 50))
             screen.blit(ui_txt.render("Øk fart", True, WHITE), (172, 165))
             if p1:
                 speedfactor += 1
-        if button2.collidepoint(pos):
+        if speedDown_button.collidepoint(pos):
             pygame.draw.rect(screen, RED_DARK, pygame.Rect(150, 210, 125, 50))
             screen.blit(ui_txt.render("Senk fart", True, WHITE), (160, 225))
             if p1 and speedfactor-1 > 0:
                 speedfactor -= 1
-        if button3.collidepoint(pos):
+        if pause_button.collidepoint(pos):
             pygame.draw.rect(screen, SEA_BLUE_DARK, pygame.Rect(150, 270, 125, 50))
             if pause:
                 screen.blit(ui_txt.render("Fortsett", True, WHITE), (166, 285))
             else:
                 screen.blit(ui_txt.render("Pause", True, WHITE), (182, 285))
-            if p1 and pause == True:
-                pause = False
-            elif p1 and pause == False:
-                pause = True
+            pause =  p1 ^ pause
         # Tegner omriss av knappene
         pygame.draw.rect(screen, WHITE, pygame.Rect(150, 150, 125, 50),2)
         pygame.draw.rect(screen, WHITE, pygame.Rect(150, 210, 125, 50),2)

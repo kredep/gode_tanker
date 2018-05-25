@@ -8,7 +8,9 @@ def getSurfaceArea(tank_params, h):
         Inn-parametere er radius i bunn (R2), 
         differansen i radius oppe og nede (R1), 
         starthøyden (h_0) og høyden (h)'''
-    return math.pi*(tank_params["R2"] + tank_params["R1"] / tank_params["h_max"] * h)**2
+    return math.pi*(tank_params["R2"] + 
+                    tank_params["R1"] / 
+                    tank_params["h_max"] * h)**2
 
 # Definerer tanker med variablene deres
 # Liten konisk metallbøtte
@@ -24,7 +26,10 @@ tank1_params = {
 # Finner overflateareal ved h_0
 tank1_params["areal"] = getSurfaceArea(tank1_params, tank1_params["h_0"])
 # Definerer tanken som en klasse for eulers metode
-tank1 = euler.Tank(tank1_params["A_hole"], tank1_params["areal"], tank1_params["h_0"], tank1_params["C"])
+tank1 = euler.Tank(tank1_params["A_hole"],
+                   tank1_params["areal"],
+                   tank1_params["h_0"],
+                   tank1_params["C"])
 
 # Stor konisk metallbøtte
 tank2_params = {
@@ -39,7 +44,10 @@ tank2_params = {
 # Finner overflateareal ved h_0
 tank2_params["areal"] = getSurfaceArea(tank2_params, tank2_params["h_0"])
 # Definerer tanken som en klasse for eulers metode
-tank2 = euler.Tank(tank2_params["A_hole"], tank2_params["areal"], tank2_params["h_0"], tank2_params["C"])
+tank2 = euler.Tank(tank2_params["A_hole"],
+                   tank2_params["areal"],
+                   tank2_params["h_0"],
+                   tank2_params["C"])
 
 # Rektangulær tank
 tank3_params = {
@@ -54,7 +62,10 @@ tank3_params = {
 # Finner overflateareal ved h_0
 tank3_params["areal"] = tank3_params["lengde"] * tank3_params["bredde"]
 # Definerer tanken som en klasse for eulers metode
-tank3 = euler.Tank(tank3_params["A_hole"], tank3_params["areal"], tank3_params["h_0"], tank3_params["C"])
+tank3 = euler.Tank(tank3_params["A_hole"],
+                   tank3_params["areal"],
+                   tank3_params["h_0"],
+                   tank3_params["C"])
 
 # Blå konisk plastbøtte
 tank4_params = {
@@ -69,7 +80,10 @@ tank4_params = {
 # Finner overflateareal ved h_0
 tank4_params["areal"] = getSurfaceArea(tank4_params, tank4_params["h_0"])
 # Definerer tanken som en klasse for eulers metode
-tank4 = euler.Tank(tank4_params["A_hole"], tank4_params["areal"], tank4_params["h_0"], tank4_params["C"])
+tank4 = euler.Tank(tank4_params["A_hole"],
+                   tank4_params["areal"],
+                   tank4_params["h_0"],
+                   tank4_params["C"])
 
 DELTA_T = euler.DELTA_T
 print(DELTA_T)
@@ -92,6 +106,7 @@ while run:
         tank1.runStep(q_inn)
         levels[0][round(time,rnd)] = tank1.fluidHeight
         q_ut_tank1 = tank1_params["A_hole"] * tank1.getFlowVelocity(list(levels[0].values())[-1])
+
     elif q_ut_tank1 != 0: #time == len(list(levels[0].values())):
         print("Tank1 tom etter {}s = {}min".format(round(time,2), round(time/60,2)))
         q_ut_tank1 = 0
@@ -102,6 +117,7 @@ while run:
         tank2.runStep(q_ut_tank1)
         levels[1][round(time,rnd)] = tank2.fluidHeight
         q_ut_tank2 = tank2_params["A_hole"] * tank2.getFlowVelocity(list(levels[1].values())[-1])
+
     elif q_ut_tank2 != 0: #time == len(list(levels[1].values())):
         print("Tank2 tom etter {}s = {}min".format(round(time,2), round(time/60,2)))
         q_ut_tank2 = 0
@@ -111,6 +127,7 @@ while run:
         tank3.runStep(q_ut_tank2)
         levels[2][round(time,rnd)] = tank3.fluidHeight
         q_ut_tank3 = tank3_params["A_hole"] * tank3.getFlowVelocity(list(levels[2].values())[-1])
+
     elif q_ut_tank3 != 0: #time == len(list(levels[2].values())):
         print("Tank3 tom etter {}s = {}min".format(round(time,2), round(time/60,2)))
         q_ut_tank3 = 0
@@ -120,6 +137,7 @@ while run:
         tank4.AREA_SURFACE = tank4_params["areal"]
         tank4.runStep(q_ut_tank3)
         levels[3][round(time,rnd)] = tank4.fluidHeight
+
     else:
         print("Tank4 tom etter {}s = {}min".format(round(time,2), round(time/60,2)))
         run = False # Simuleringen er ferdig
@@ -131,15 +149,15 @@ for index, fluidHeights in enumerate(levels):
     plt.plot(list(fluidHeights.keys()), list(fluidHeights.values()), label="Tank {}".format(index+1))
 
 # Plotter målinger
-measurements = [
-    {0:9,47:8,99:7,149:6,203:5,259:4,304:3,367:2},                                                              # Målinger for tank 1
-    {79:10,129:9,171:8,213:7,253:6,302:5,346:4,394:3},                                                          # Målinger for tank 2
-    {104:14,191:13,280:12,353:11,459:9.5,493:9,574:7.5,616:7,674:6,754:4.8,816:4,904:3,1017:2},                 # Målinger for tank 3
-    {37:2.5,95:3.5,180:4.5,277:5.1,331:5.5,535:5.6,593:5.4,652:5.2,716:4.9,768:4.5,843:4,905:3.5,955:3,1053:2}  # Målinger for tank 4
+measurements = [                                                                                          #Målinger for
+    {0:9,47:8,99:7,149:6,203:5,259:4,304:3,367:2},                                                              #tank 1
+    {79:10,129:9,171:8,213:7,253:6,302:5,346:4,394:3},                                                          #tank 2
+    {104:14,191:13,280:12,353:11,459:9.5,493:9,574:7.5,616:7,674:6,754:4.8,816:4,904:3,1017:2},                 #tank 3
+    {37:2.5,95:3.5,180:4.5,277:5.1,331:5.5,535:5.6,593:5.4,652:5.2,716:4.9,768:4.5,843:4,905:3.5,955:3,1053:2}  #tank 4
 ]
 colors = ["C1","g","r","b"]
 for  index, mm in enumerate(measurements):
-    plt.plot(list(mm.keys()), list(mm.values()), "{}s".format(colors[index]), label="Målinger for tank {}".format(index+1))
+    plt.plot(list(mm.keys()), list(mm.values()), colors[index] + "s", label="Målinger for tank {}".format(index+1))
 
 # Legger til detaljer og viser plot
 plt.title("Tanksimulering av 4 tanker")
@@ -147,7 +165,7 @@ plt.ylabel('Høyde [cm]')
 plt.xlabel('Tid [s]')
 plt.legend()
 plt.grid()
-plt.show()
+plt.show(block=False)
 
 # Starter animasjon
-animasjon.animate([levels[0],levels[1],levels[2],levels[3]],[tank1_params,tank2_params,tank3_params,tank4_params],DELTA_T,rnd)
+animasjon.animate(levels,[tank1_params,tank2_params,tank3_params,tank4_params],DELTA_T,rnd)
