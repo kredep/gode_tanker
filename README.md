@@ -6,4 +6,4 @@ Prosjektet simulerer 4 tanker som renner over i hverandre ved hjelp av eulers me
 ![Simulation](simulation.png)
 
 ### Visualisering
-![Animation](animation.png)
+![Animation](animation.PNG)
